@@ -1,7 +1,5 @@
 import java.util.Random;
 
-import javax.xml.catalog.Catalog;
-
 public class Minesweeper {
     private String[][] gameAreaArray;
     private boolean[][] doesHaveMineArray;
@@ -12,7 +10,7 @@ public class Minesweeper {
         Random xGen = new Random();
         Random yGen = new Random();
 
-        if (rows <= 10 && cols <= 10) {
+        if (rows < 10 && cols < 10) {
             System.out.println("Cannot create a mine field with that many rows and columns");
             System.exit(0);
         } else {
@@ -69,10 +67,62 @@ public class Minesweeper {
                 System.out.println("Usage: java Minesweeper [ROWS] [COLS]");
         }
 
+        // Start the game
         game.run();
     }
 
     public void run() {
-        // TODO: perform game loop
+        intro();
+        while (true) {
+            newTurn();
+        }
+    }
+
+    private void intro() {
+        System.out.println("        _");
+        System.out.println("  /\\/\\ (_)_ __   ___  _____      _____  ___ _ __   ___ _ __");
+        System.out.println(" /    \\| | '_ \\ / _ \\/ __\\ \\ /\\ / / _ \\/ _ \\ '_ \\ / _ \\ '__|");
+        System.out.println("/ /\\/\\ \\ | | | |  __/\\__ \\\\ V  V /  __/  __/ |_) |  __/ |");
+        System.out.println("\\/    \\/_|_| |_|\\___||___/ \\_/\\_/ \\___|\\___| .__/ \\___|_|");
+        System.out.println("                                           |_|");
+        System.out.println("");
+    }
+
+    private int score() {
+        return gameAreaArray.length * doesHaveMineArray[0].length - totalMines - roundsCompleted;
+    }
+
+    private void printRoundsCompleted() {
+        System.out.println(String.format("Number of rounds completed: %s", roundsCompleted));
+        System.out.println("");
+    }
+
+    private void printMinesweeperGrid() {
+        for (int i = 0; i < gameAreaArray.length; i++) {
+            System.out.print(String.format("%s |", i));
+
+            for (int j = 0; j < gameAreaArray[i].length; j++) {
+                System.out.print(gameAreaArray[i][j]);
+
+                if (j < gameAreaArray[i].length - 1) {
+                    System.out.print("|");
+                }
+            }
+
+            System.out.println("|");
+        }
+
+        System.out.print("   ");
+
+        for (int i = 0; i < gameAreaArray[0].length; i++) {
+            System.out.print(String.format("%s  ", i));
+        }
+
+        System.out.println("");
+    }
+
+    private void newTurn() {
+        printRoundsCompleted();
+        printMinesweeperGrid();
     }
 }
