@@ -1,4 +1,5 @@
 import java.util.Random;
+import java.util.Scanner;
 
 public class Minesweeper {
     private String[][] gameAreaArray;
@@ -75,6 +76,10 @@ public class Minesweeper {
         intro();
         while (true) {
             newTurn();
+
+            if (hasWon()) {
+                break;
+            }
         }
     }
 
@@ -124,5 +129,32 @@ public class Minesweeper {
     private void newTurn() {
         printRoundsCompleted();
         printMinesweeperGrid();
+        command();
+    }
+
+    private boolean hasWon() {
+        boolean allMinesRevealed = true;
+        boolean allSquaresRevealed = true;
+
+        for (int i = 0; i < gameAreaArray.length; i++) {
+            for (int j = 0; j < gameAreaArray[0].length; j++) {
+                if (doesHaveMineArray[i][j]) {
+                    if (gameAreaArray[i][j] != " F ") {
+                        allMinesRevealed = false;
+                    }
+                } else {
+                    if (gameAreaArray[i][j] == " F " || gameAreaArray[i][j] == " ? " || gameAreaArray[i][j] == "  ") {
+                        allMinesRevealed = false;
+                    }
+                }
+            }
+        }
+        return allMinesRevealed && allSquaresRevealed;
+    }
+
+    private void command() {
+        Scanner kb = new Scanner(System.in);
+        String input = kb.nextLine().trim();
+
     }
 }
