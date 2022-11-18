@@ -104,23 +104,23 @@ public class Minesweeper {
 
     private void printMinesweeperGrid() {
         for (int i = 0; i < gameAreaArray.length; i++) {
-            System.out.print(String.format("%s |", i));
+            System.out.print(String.format("%s | ", i));
 
             for (int j = 0; j < gameAreaArray[i].length; j++) {
                 System.out.print(gameAreaArray[i][j]);
 
                 if (j < gameAreaArray[i].length - 1) {
-                    System.out.print("|");
+                    System.out.print("| ");
                 }
             }
 
             System.out.println("|");
         }
 
-        System.out.print("   ");
+        System.out.print("    ");
 
         for (int i = 0; i < gameAreaArray[0].length; i++) {
-            System.out.print(String.format("%s  ", i));
+            System.out.print(String.format("%s   ", i));
         }
 
         System.out.println("");
@@ -152,9 +152,63 @@ public class Minesweeper {
         return allMinesRevealed && allSquaresRevealed;
     }
 
+    private void help() {
+        System.out.println("");
+        System.out.println("Command List: ");
+        System.out.println("help: help");
+        System.out.println("Guess: guess [ROW] [COL]");
+    }
+
+    // Return true if the input was in bounds, otherwise, return false
+    private boolean isInBounds(int row, int col) {
+        return (row >= 0 && row < doesHaveMineArray.length && col >= 0 && col < doesHaveMineArray[0].length);
+    }
+
+    private boolean guess(Scanner keyboard) {
+        boolean wasGuessSuccessful = false;
+        int guessedRow = 0;
+        int guessedCol = 0;
+
+        // If the first input was an integer
+        if (keyboard.hasNextInt()) {
+            guessedRow = keyboard.nextInt();
+
+            // If the second input was an integer
+            if (keyboard.hasNextInt()) {
+                guessedCol = keyboard.nextInt();
+
+                // Guess was successful if it was in bounds and was a an integer input
+                if (!keyboard.hasNextInt() && isInBounds(guessedRow, guessedCol)) {
+                    wasGuessSuccessful = true;
+                    roundsCompleted++;
+                    gameAreaArray[guessedRow][guessedCol] = "? ";
+                    System.out.println("");
+                }
+            }
+        }
+
+        return wasGuessSuccessful;
+    }
+
     private void command() {
+        // Create a new scanner which points to the input stream
         Scanner kb = new Scanner(System.in);
         String input = kb.nextLine().trim();
 
+        // Put stream into input
+        Scanner epic = new Scanner(input);
+        String command = epic.next().trim();
+
+        switch (command) {
+            case "help":
+                help();
+
+                break;
+            case "guess":
+                if (!guess(epic)) {
+                    System.out.println("Round completed");
+                }
+                break;
+        }
     }
 }
