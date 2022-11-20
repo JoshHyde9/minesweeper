@@ -81,6 +81,7 @@ public class Minesweeper {
                 break;
             }
         }
+        winMessage();
     }
 
     private void intro() {
@@ -159,6 +160,12 @@ public class Minesweeper {
             }
         }
         return allMinesRevealed && allSquaresRevealed;
+    }
+
+    private void winMessage() {
+        System.out.println("Congrats, you won!");
+        System.out.println(String.format("Final Score: %s", score()));
+        System.exit(0);
     }
 
     private void help() {
