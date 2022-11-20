@@ -75,7 +75,7 @@ public class Minesweeper {
     public void run() {
         intro();
         while (true) {
-            newTurn();
+            nextTurn();
 
             if (hasWon()) {
                 break;
@@ -98,7 +98,7 @@ public class Minesweeper {
     }
 
     private void printRoundsCompleted() {
-        System.out.println(String.format("Number of rounds completed: %s", roundsCompleted));
+        System.out.println(String.format("Round Number: %s", roundsCompleted));
         System.out.println("");
     }
 
@@ -126,7 +126,7 @@ public class Minesweeper {
         System.out.println("");
     }
 
-    private void newTurn() {
+    private void nextTurn() {
         printRoundsCompleted();
         printMinesweeperGrid();
         command();
@@ -190,6 +190,10 @@ public class Minesweeper {
         return wasGuessSuccessful;
     }
 
+    private void invalidCommand() {
+        System.out.println("Command not recognised, try typing 'help'.");
+    }
+
     private void command() {
         // Create a new scanner which points to the input stream
         Scanner kb = new Scanner(System.in);
@@ -209,6 +213,8 @@ public class Minesweeper {
                     System.out.println("Round completed");
                 }
                 break;
+            default:
+                invalidCommand();
         }
     }
 }
