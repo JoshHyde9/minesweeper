@@ -65,7 +65,7 @@ public class Minesweeper {
                     System.out.println(e);
                 }
             default:
-                System.out.println("Usage: java Minesweeper [ROWS] [COLS]");
+                System.out.println("Type 'help' for information");
         }
 
         // Start the game
@@ -156,7 +156,9 @@ public class Minesweeper {
         System.out.println("");
         System.out.println("Command List: ");
         System.out.println("help: help");
+        System.out.println("Quit: quit");
         System.out.println("Guess: guess [ROW] [COL]");
+        System.out.println("");
     }
 
     // Return true if the input was in bounds, otherwise, return false
@@ -194,6 +196,10 @@ public class Minesweeper {
         System.out.println("Command not recognised, try typing 'help'.");
     }
 
+    private void quit() {
+        System.exit(0);
+    }
+
     private void command() {
         // Create a new scanner which points to the input stream
         Scanner kb = new Scanner(System.in);
@@ -212,6 +218,9 @@ public class Minesweeper {
                 if (!guess(epic)) {
                     System.out.println("Round completed");
                 }
+                break;
+            case "quit":
+                quit();
                 break;
             default:
                 invalidCommand();
