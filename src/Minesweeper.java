@@ -65,7 +65,6 @@ public class Minesweeper {
                     System.out.println(e);
                 }
             default:
-                System.out.println("Type 'help' for information.");
         }
 
         // Start the game
@@ -90,6 +89,8 @@ public class Minesweeper {
         System.out.println("/ /\\/\\ \\ | | | |  __/\\__ \\\\ V  V /  __/  __/ |_) |  __/ |");
         System.out.println("\\/    \\/_|_| |_|\\___||___/ \\_/\\_/ \\___|\\___| .__/ \\___|_|");
         System.out.println("                                           |_|");
+        System.out.println("");
+        System.out.println("Type 'help' for information.");
         System.out.println("");
     }
 
