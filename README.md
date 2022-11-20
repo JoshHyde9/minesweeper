@@ -7,6 +7,7 @@ In your terminal run:
 ```sh
 java <path to >/Minesweeper.java <Row Count> <Col Count>
 
+# Example:
 java src/Minesweeper.java 10 10
 ```
 
