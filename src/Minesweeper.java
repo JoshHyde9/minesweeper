@@ -45,6 +45,7 @@ public class Minesweeper {
 
             oldRow = row;
             oldCol = col;
+
             doesHaveMineArray[row][col] = true;
         }
     }
@@ -89,9 +90,7 @@ public class Minesweeper {
         System.out.println("/ /\\/\\ \\ | | | |  __/\\__ \\\\ V  V /  __/  __/ |_) |  __/ |");
         System.out.println("\\/    \\/_|_| |_|\\___||___/ \\_/\\_/ \\___|\\___| .__/ \\___|_|");
         System.out.println("                                           |_|");
-        System.out.println("");
-        System.out.println("Type 'help' for information.");
-        System.out.println("");
+        help();
     }
 
     private int score() {
@@ -153,7 +152,7 @@ public class Minesweeper {
                         allMinesRevealed = false;
                     }
                 } else {
-                    if (gameAreaArray[i][j] == " F " || gameAreaArray[i][j] == " ? " || gameAreaArray[i][j] == "  ") {
+                    if (gameAreaArray[i][j] == " F " || gameAreaArray[i][j] == " ? " || gameAreaArray[i][j] == "   ") {
                         allMinesRevealed = false;
                     }
                 }
@@ -168,12 +167,39 @@ public class Minesweeper {
         System.out.println("help: help");
         System.out.println("Quit: quit");
         System.out.println("Guess: guess [ROW] [COL]");
+        System.out.println("Mark: mark [ROW] [COL]");
+        System.out.println("Reveal: reveal [ROW] [COL]");
         System.out.println("");
     }
 
     // Return true if the input was in bounds, otherwise, return false
     private boolean isInBounds(int row, int col) {
-        return (row >= 0 && row < doesHaveMineArray.length && col >= 0 && col < doesHaveMineArray[0].length);
+        return (row >= 0 && row < doesHaveMineArray.length && col >= 0
+                && col < doesHaveMineArray[0].length);
+    }
+
+    private int getNumAdjMines(int row, int col) {
+        int numAdjMines = 0;
+
+        for (int i = row - 1; i <= row + 1; i++) {
+
+            if (!(i >= 0 && i < gameAreaArray.length)) {
+                continue;
+            }
+
+            for (int j = col - 1; j <= col + 1; j++) {
+
+                if ((i == row && j == col) || (!(j >= 0 && j < gameAreaArray[0].length))) {
+                    continue;
+                } else {
+                    if (doesHaveMineArray[i][j]) {
+                        numAdjMines++;
+                    }
+                }
+            }
+        }
+
+        return numAdjMines;
     }
 
     private boolean guess(Scanner keyboard) {
@@ -183,17 +209,17 @@ public class Minesweeper {
 
         // If the first input was an integer
         if (keyboard.hasNextInt()) {
-            guessedRow = keyboard.nextInt();
+            guessedRow = keyboard.nextInt() - 1;
 
             // If the second input was an integer
             if (keyboard.hasNextInt()) {
-                guessedCol = keyboard.nextInt();
+                guessedCol = keyboard.nextInt() - 1;
 
                 // Guess was successful if it was in bounds and was a an integer input
                 if (!keyboard.hasNextInt() && isInBounds(guessedRow, guessedCol)) {
                     wasGuessSuccessful = true;
                     roundsCompleted++;
-                    gameAreaArray[guessedRow - 1][guessedCol - 1] = "? ";
+                    gameAreaArray[guessedRow][guessedCol] = "? ";
                     System.out.println("");
                 }
             }
@@ -208,21 +234,49 @@ public class Minesweeper {
         int markedCol = 0;
 
         if (keyboard.hasNextInt()) {
-            markedRow = keyboard.nextInt();
+            markedRow = keyboard.nextInt() - 1;
 
             if (keyboard.hasNextInt()) {
-                markedCol = keyboard.nextInt();
+                markedCol = keyboard.nextInt() - 1;
 
                 if (!keyboard.hasNextInt() && isInBounds(markedRow, markedCol)) {
                     didMark = true;
                     roundsCompleted++;
-                    gameAreaArray[markedRow - 1][markedCol - 1] = "F ";
+                    gameAreaArray[markedRow][markedCol] = "F ";
                     System.out.println("");
                 }
             }
         }
 
         return didMark;
+    }
+
+    private boolean reveal(Scanner keyboard) {
+        boolean didReveal = false;
+        int revealRow = 0;
+        int revealCol = 0;
+
+        if (keyboard.hasNextInt()) {
+            revealRow = keyboard.nextInt() - 1;
+
+            if (keyboard.hasNextInt()) {
+                revealCol = keyboard.nextInt() - 1;
+
+                if (!keyboard.hasNextInt() && isInBounds(revealRow, revealCol)) {
+                    didReveal = true;
+                    roundsCompleted++;
+
+                    if (!doesHaveMineArray[revealRow][revealCol]) {
+                        gameAreaArray[revealRow][revealCol] = "" + getNumAdjMines(revealRow, revealCol) + " ";
+                        System.out.println("");
+                    } else {
+                        System.out.println("Sucked in, you hit a mine.");
+                        System.exit(0);
+                    }
+                }
+            }
+        }
+        return didReveal;
     }
 
     private void invalidCommand() {
@@ -253,6 +307,7 @@ public class Minesweeper {
                     System.out.println("Out of range guess coords.");
                     System.out.println("");
                 }
+
                 break;
             case "mark":
                 if (!mark(epic)) {
@@ -260,6 +315,15 @@ public class Minesweeper {
                     System.out.println("Out of range marker coords.");
                     System.out.println("");
                 }
+
+                break;
+            case "reveal":
+                if (!reveal(epic)) {
+                    System.out.println("");
+                    System.out.println("Out of range reveal coords.");
+                    System.out.println("");
+                }
+
                 break;
             case "quit":
                 quit();
