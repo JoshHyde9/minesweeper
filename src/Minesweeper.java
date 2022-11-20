@@ -4,7 +4,7 @@ import java.util.Scanner;
 public class Minesweeper {
     private String[][] gameAreaArray;
     private boolean[][] doesHaveMineArray;
-    private int roundsCompleted = 0;
+    private int roundsCompleted = 1;
     private int totalMines = 0;
 
     public Minesweeper(int rows, int cols) {
@@ -65,7 +65,7 @@ public class Minesweeper {
                     System.out.println(e);
                 }
             default:
-                System.out.println("Type 'help' for information");
+                System.out.println("Type 'help' for information.");
         }
 
         // Start the game
@@ -104,8 +104,15 @@ public class Minesweeper {
 
     private void printMinesweeperGrid() {
         for (int i = 0; i < gameAreaArray.length; i++) {
-            System.out.print(String.format("%s | ", i));
 
+            // Print vertical lines
+            if (i + 1 > 9) {
+                System.out.print(String.format("%s | ", i + 1));
+            } else {
+                System.out.print(String.format("%s  | ", i + 1));
+            }
+
+            // Print horizontal lines
             for (int j = 0; j < gameAreaArray[i].length; j++) {
                 System.out.print(gameAreaArray[i][j]);
 
@@ -114,13 +121,15 @@ public class Minesweeper {
                 }
             }
 
+            // Last line
             System.out.println("|");
         }
 
-        System.out.print("    ");
+        System.out.print("     ");
 
         for (int i = 0; i < gameAreaArray[0].length; i++) {
-            System.out.print(String.format("%s   ", i));
+
+            System.out.print(String.format("%s   ", i + 1));
         }
 
         System.out.println("");
@@ -183,13 +192,36 @@ public class Minesweeper {
                 if (!keyboard.hasNextInt() && isInBounds(guessedRow, guessedCol)) {
                     wasGuessSuccessful = true;
                     roundsCompleted++;
-                    gameAreaArray[guessedRow][guessedCol] = "? ";
+                    gameAreaArray[guessedRow - 1][guessedCol - 1] = "? ";
                     System.out.println("");
                 }
             }
         }
 
         return wasGuessSuccessful;
+    }
+
+    private boolean mark(Scanner keyboard) {
+        boolean didMark = false;
+        int markedRow = 0;
+        int markedCol = 0;
+
+        if (keyboard.hasNextInt()) {
+            markedRow = keyboard.nextInt();
+
+            if (keyboard.hasNextInt()) {
+                markedCol = keyboard.nextInt();
+
+                if (!keyboard.hasNextInt() && isInBounds(markedRow, markedCol)) {
+                    didMark = true;
+                    roundsCompleted++;
+                    gameAreaArray[markedRow - 1][markedCol - 1] = "F ";
+                    System.out.println("");
+                }
+            }
+        }
+
+        return didMark;
     }
 
     private void invalidCommand() {
@@ -216,7 +248,16 @@ public class Minesweeper {
                 break;
             case "guess":
                 if (!guess(epic)) {
-                    System.out.println("Round completed");
+                    System.out.println("");
+                    System.out.println("Out of range guess coords.");
+                    System.out.println("");
+                }
+                break;
+            case "mark":
+                if (!mark(epic)) {
+                    System.out.println("");
+                    System.out.println("Out of range marker coords.");
+                    System.out.println("");
                 }
                 break;
             case "quit":
